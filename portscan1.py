@@ -10,9 +10,11 @@ port = 443
 
 def portscanner(port):
     if s.connect_ex((host, port)):
-        print("Port %d is closed" % (port))
+        # print in color red
+        print("\033[1;31;40m Port %d is closed \033[0;37;40m" % (port))
     else:
-        print("Port %d is open" % (port))
+        # print in color green
+        print("\033[1;32;40m Port %d is open \033[0;37;40m" % (port))
 
 
 # scan port 1 to 1024
