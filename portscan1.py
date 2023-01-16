@@ -15,4 +15,6 @@ def portscanner(port):
         print("Port %d is open" % (port))
 
 
-portscanner(port)
+# scan port 1 to 1024
+for port in range(1, 1025):
+    portscanner(port)
