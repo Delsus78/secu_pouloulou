@@ -40,22 +40,19 @@ def portscanner(host, port):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     if s.connect_ex((host, port)):
         # print in color red
-        print(f"\033[1;31;40m Port {port} is closed \033[0;37;40m")
+        print(f"\033[1;31;40mPort {port} is closed \033[0;37;40m")
     else:
         # print in color green
-        print(f"\033[1;32;40m Port {port} is open : \nBanner : {retBanner(host, port)} \033[0;37;40m")
+        print(f"\033[1;32;40mPort {port} is open : \nBanner : {retBanner(host, port)} \033[0;37;40m")
+
 
 # Améliorer votre programme, en ajoutant la fonction retBanner() qui permet d'afficher la version des services qui utilisent les ports ouverts (banners). Utilisez la méthode recv() de la bibliothèque socket
 def retBanner(host, port):
-    try:
-        socket.setdefaulttimeout(2)
-        s = socket.socket()
-        s.connect((host, port))
-        banner = s.recv(4096)
-        return banner.decode()
-    except:
-        print('[-] Error in retBanner')
-        return
+    socket.setdefaulttimeout(2)
+    s = socket.socket()
+    s.connect((host, port))
+    banner = s.recv(4096)
+    return banner
 
 
 if __name__ == '__main__':
