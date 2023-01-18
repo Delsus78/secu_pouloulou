@@ -4,6 +4,8 @@ import socket
 import optparse
 import threading
 
+import chardet
+
 
 def main():
     parser = optparse.OptionParser('usage %prog -H <target host> -p <target port>')
@@ -43,15 +45,13 @@ def portscanner(host, port):
         print(f"\033[1;31;40mPort {port} is closed \033[0;37;40m")
     else:
         # print in color green
-        print(f"\033[1;32;40mPort {port} is open : \nBanner : {retBanner(host, port)} \033[0;37;40m")
+        print(f"\033[1;32;40mPort {port} is open : \nBanner : {retBanner(s)} \033[0;37;40m")
 
 
 # Améliorer votre programme, en ajoutant la fonction retBanner() qui permet d'afficher la version des services qui utilisent les ports ouverts (banners). Utilisez la méthode recv() de la bibliothèque socket
-def retBanner(host, port):
+def retBanner(s):
     socket.setdefaulttimeout(2)
-    s = socket.socket()
-    s.connect((host, port))
-    banner = s.recv(4096)
+    banner = s.recv(1024)
     return banner
 
 
