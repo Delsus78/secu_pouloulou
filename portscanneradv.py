@@ -51,9 +51,10 @@ def retBanner(host, port):
         socket.setdefaulttimeout(2)
         s = socket.socket()
         s.connect((host, port))
-        banner = s.recvfrom(1024)
+        banner = s.recvfrom(4096)
         return banner
     except:
+        print('[-] Error in retBanner')
         return
 
 
