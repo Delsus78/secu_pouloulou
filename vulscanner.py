@@ -102,11 +102,11 @@ def retBanner(host, port, vulns):
         banner = s.recvfrom(4096)
 
         if banner:
-            stringedBanner = str(banner[0]).replace('\n', '').replace('\r', '').replace('b', '', 1)
+            stringedBanner = str(banner[0]).replace('\\r', '').replace('b', '', 1)
             if stringedBanner in vulns:
-                return "Found Vulnerable Banner : " + stringedBanner
+                return "\033[1;31;40m - Found Vulnerable Banner : \033[0;37;40m" + stringedBanner
             else:
-                return "No Vulnerability Found" + stringedBanner
+                return "No Vulnerability Found : " + stringedBanner
 
         return "No Banner Found"
     except:
