@@ -31,6 +31,8 @@ def main():
 
     with open(vulnFile, 'r') as f:
         vulns = f.readlines()
+        # remove \n
+        vulns = [vuln.replace('\n', '') for vuln in vulns]
 
     # getting host by ip / hostname
     try:
@@ -102,8 +104,8 @@ def retBanner(host, port, vulns):
         banner = s.recvfrom(4096)
 
         if banner:
-            stringedBanner = str(banner[0]).replace('\\r', '').replace('b', '', 1).replace('\'', '', 1).replace('\'', '', len(str(banner[0])) - 1)
-            print(f"Banner : {stringedBanner} QUI EST TESTE AVEC {vulns[0]}")
+            stringedBanner = str(banner[0]).replace('\\r', '').replace('\\n', '').replace('b', '', 1).replace('\'', '', 1).replace('\'', '', len(str(banner[0])) - 1)
+            print(f"Banner : ||{stringedBanner}|| QUI EST TESTE AVEC ||{vulns[0]}|| \n")
             if stringedBanner in vulns:
                 return "\033[1;31;40m - Found Vulnerable Banner : \033[0;37;40m" + stringedBanner
             else:
