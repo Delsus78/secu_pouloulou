@@ -6,6 +6,7 @@ import threading
 
 
 def main():
+    # parsing command line arguments
     parser = optparse.OptionParser('usage %prog -H <target host> -p <target port> -v <vuln file>')
     parser.add_option('-H', dest='tgtHost', type='string', help='specify target host')
     parser.add_option('-p', dest='tgtPort', type='string', help='specify target port[s] separated by comma')
@@ -13,50 +14,73 @@ def main():
 
     (options, args) = parser.parse_args()
     tgtHost = options.tgtHost
+
+    # parsing port list with range or comma separated
     if str(options.tgtPort).find(':') != -1:
         tgtPorts = str(options.tgtPort).split(':')
-        tgtPorts = range(int(tgtPorts[0]), int(tgtPorts[1]))
+        tgtPorts = [portToScan for portToScan in range(int(tgtPorts[0]), int(tgtPorts[1]))]
         print(tgtPorts)
     else:
         tgtPorts = str(options.tgtPort).split(',')
+
+    # parsing vuln file
     vulnFile = options.vulnFile
 
-    if (tgtHost == None) | (tgtPorts[0] == None) | (vulnFile == None):
-        print(parser.usage)
-        exit(0)
-
-    # test si le fichier existe
-    if not os.path.isfile(vulnFile):
-        print(f'[-] {vulnFile} does not exist.')
-        exit(0)
-
-    # a les droits de lecture
-    if not os.access(vulnFile, os.R_OK):
-        print(f'[-] {vulnFile} access denied.')
+    if not validation(parser, tgtHost, tgtPorts, vulnFile):
         exit(0)
 
     with open(vulnFile, 'r') as f:
         vulns = f.readlines()
 
-    for port in tgtPorts:
-        portScan(tgtHost, port, vulns)
-
-def portScan(host, ports, vulns):
+    # getting host by ip / hostname
     try:
-        tgtIP = socket.gethostbyname(host)
+        tgtIP = socket.gethostbyname(tgtHost)
     except:
-        print('Unknown host %s' % host)
+        print('Unknown host %s' % tgtHost)
         return
 
+    # get host by address and print name
     try:
         tgtName = socket.gethostbyaddr(tgtIP)
         print('Scan Results for: ' + tgtName[0])
     except:
         print('Scan Results for: ' + tgtIP)
+
+    # set default timeout
     socket.setdefaulttimeout(1)
-    for port in ports:
-        t = threading.Thread(target=portscanner, args=(host, int(port), vulns))
+
+    # scan ports
+    for port in tgtPorts:
+        t = threading.Thread(target=portscanner, args=(tgtHost, int(port), vulns))
         t.start()
+
+
+def validation(parser, tgtHost, tgtPorts, vulnFile) -> bool:
+    """
+    Validation of command line arguments
+    :param parser:
+    :param tgtHost:
+    :param tgtPorts:
+    :param vulnFile:
+    :return:
+    """
+    valid = True
+    if (tgtHost == None) | (tgtPorts == None or tgtPorts == []) | (vulnFile == None):
+        print(parser.usage)
+        valid = False
+
+    # test si le fichier existe
+    if not os.path.isfile(vulnFile):
+        print(f'[-] {vulnFile} does not exist.')
+        valid = False
+
+    # a les droits de lecture
+    if not os.access(vulnFile, os.R_OK):
+        print(f'[-] {vulnFile} access denied.')
+        valid = False
+
+    return valid
+
 
 def portscanner(host, port, vulns):
     print(f'Scanning port {port}')
@@ -86,3 +110,6 @@ def retBanner(host, port, vulns):
     except:
         print('[-] Error in retBanner')
         return
+
+if __name__ == '__main__':
+    main()
