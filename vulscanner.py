@@ -13,7 +13,11 @@ def main():
 
     (options, args) = parser.parse_args()
     tgtHost = options.tgtHost
-    tgtPorts = str(options.tgtPort).split(',')
+    if str(options.tgtPort).find(':') != -1:
+        tgtPorts = str(options.tgtPort).split(':')
+        tgtPorts = range(int(tgtPorts[0]), int(tgtPorts[1]))
+    else:
+        tgtPorts = str(options.tgtPort).split(',')
     vulnFile = options.vulnFile
 
     if (tgtHost == None) | (tgtPorts[0] == None) | (vulnFile == None):
