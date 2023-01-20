@@ -16,6 +16,7 @@ def main():
     if str(options.tgtPort).find(':') != -1:
         tgtPorts = str(options.tgtPort).split(':')
         tgtPorts = range(int(tgtPorts[0]), int(tgtPorts[1]))
+        print(tgtPorts)
     else:
         tgtPorts = str(options.tgtPort).split(',')
     vulnFile = options.vulnFile
