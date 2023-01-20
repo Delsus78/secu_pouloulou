@@ -103,6 +103,7 @@ def retBanner(host, port, vulns):
 
         if banner:
             stringedBanner = str(banner[0]).replace('\\r', '').replace('b', '', 1).replace('\'', '', 1).replace('\'', '', len(str(banner[0])) - 1)
+            print(f"Banner : {stringedBanner} QUI EST TESTE AVEC {vulns[0]}")
             if stringedBanner in vulns:
                 return "\033[1;31;40m - Found Vulnerable Banner : \033[0;37;40m" + stringedBanner
             else:
