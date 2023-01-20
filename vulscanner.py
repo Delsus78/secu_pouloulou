@@ -50,6 +50,8 @@ def main():
     socket.setdefaulttimeout(1)
 
     # scan ports
+    print(f"with\n------------------\n{vulns}\n------------------")
+
     for port in tgtPorts:
         t = threading.Thread(target=portscanner, args=(tgtHost, int(port), vulns))
         t.start()
@@ -84,7 +86,6 @@ def validation(parser, tgtHost, tgtPorts, vulnFile) -> bool:
 
 def portscanner(host, port, vulns):
     print(f'Scanning port {port}')
-    print(f"with {vulns}\n------------------")
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     if s.connect_ex((host, port)):
         # print in color red
@@ -101,11 +102,10 @@ def retBanner(host, port, vulns):
         banner = s.recvfrom(4096)
 
         if banner:
-            for vuln in vulns:
-                if vuln in banner:
-                    return "Found Vulnerable Banner : " + str(banner)
-                else:
-                    return "No Vulnerability Found" + str(banner)
+            if banner[0] in vulns:
+                return "Found Vulnerable Banner : " + str(banner[0])
+            else:
+                return "No Vulnerability Found" + str(banner[0])
 
         return "No Banner Found"
     except:
