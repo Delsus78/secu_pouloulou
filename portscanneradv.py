@@ -4,9 +4,6 @@ import socket
 import optparse
 import threading
 
-import chardet
-
-
 def main():
     socket.setdefaulttimeout(2)
 
